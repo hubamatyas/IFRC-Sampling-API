@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/b9fee2a8-3b3b-45ec-9061-9e0c746b40e1/appservices/subscriptions/b9fee2a8-3b3b-45ec-9061-9e0c746b40e1/resourceGroups/ifrc/providers/Microsoft.Web/sites/ifrc-sampling",
+    "appService.deploySubpath": "."
+}
