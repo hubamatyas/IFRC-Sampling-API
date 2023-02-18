@@ -21,10 +21,13 @@ def zscorecalculator(ci):
             return 2.58
 
 class SimpleRandom:
-    def __init__(self,margin_of_error,confidence_level,individuals):
+    def __init__(self,margin_of_error,confidence_level,individuals,households,nonResponseRate,subgroups):
         self.margin_of_error = margin_of_error
         self.confidence_level = confidence_level
         self.individuals = individuals
+        self.households = households
+        self.nonResponseRate = nonResponseRate
+        self.subgroups = subgroups
 
     def calculate_sample_size(self):
         confidence_interval = self.confidence_interval
@@ -35,6 +38,7 @@ class SimpleRandom:
         denominator = 1 + (numerator / individuals)
         sample_size = numerator / denominator
         return math.ceil(sample_size)
+
 
 
 
