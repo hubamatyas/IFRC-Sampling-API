@@ -1,13 +1,14 @@
 from django.shortcuts import render, HttpResponse
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import StateSerializer, OptionSerializer
 from .models import State, Option
 
+
 # Create your views here.
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
+
 
 @api_view(['GET'])
 def apiOverview(request):
@@ -20,11 +21,13 @@ def apiOverview(request):
     }
     return Response(api_urls)
 
+
 @api_view(['GET'])
 def stateList(request):
     states = State.objects.all()
     serializer = StateSerializer(states, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def optionList(request):
@@ -32,13 +35,14 @@ def optionList(request):
     serializer = OptionSerializer(options, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def decisionTree(request, state_id):
     try:
         state = State.objects.get(id=state_id)
     except State.DoesNotExist:
         return Response(status=404)
-        
+
     state = State.objects.get(id=state_id)
     options = Option.objects.filter(state=state)
     response = {
@@ -46,3 +50,19 @@ def decisionTree(request, state_id):
         'options': OptionSerializer(options, many=True).data
     }
     return Response(response)
+
+
+@api_view(['GET'])
+def simpleRandom(request):
+    margin_of_error = float(request.query_params.get('margin_of_error'))
+    confidence_level = int(request.query_params.get('confidence_level'))
+    non_response_rate = float(request.query_params.get('non_response_rate'))
+    subgroups = int(request.query_params.get('subgroups'))
+    households = int(request.query_params.get('households'))
+    individuals = int(request.query_params.get('individuals'))
+    sample_size = simpleRandom.calculate_sample_size(margin_of_error,confidence_level,individuals)
+    response = {
+        'sample size': sample_size
+    }
+    return Response(response)
+
