@@ -60,7 +60,7 @@ def simpleRandom(request):
     subgroups = int(request.query_params.get('subgroups'))
     households = int(request.query_params.get('households'))
     individuals = int(request.query_params.get('individuals'))
-    sample_size = simpleRandom.calculate_sample_size(margin_of_error,confidence_level,individuals)
+    sample_size = simpleRandom.get_sample_size()
     response = {
         'sample size': sample_size
     }
