@@ -34,6 +34,10 @@ class SimpleRandom:
                 self.sample_size = self.calculate_sample_size(self.individuals, self.margin_of_error,
                                                               self.confidence_level,
                                                               self.nonResponseRate)
+            else:
+                self.sample_size = self.calculate_subgroup_sample_sizes(self.individuals, self.margin_of_error,
+                                                                        self.confidence_level,
+                                                                        self.nonResponseRate)
         elif households is not None:
             self.households = households
             self.individuals = households * 4  # assumed the average number of people in a single household = 4
@@ -41,6 +45,12 @@ class SimpleRandom:
                 self.sample_size = self.calculate_sample_size(self.individuals, self.margin_of_error,
                                                               self.confidence_level,
                                                               self.nonResponseRate)
+            else:
+                self.sample_size = self.calculate_subgroup_sample_sizes(self.individuals, self.margin_of_error,
+                                                                        self.confidence_level,
+                                                                        self.nonResponseRate)
+        else:
+            raise ValueError("Either the number of individuals or the number of households must be specified")
 
     def calculate_sample_size(self, population_size, margin_of_error, confidence_level, non_response_rate, subgroups):
         confidence_interval = self.confidence_interval
