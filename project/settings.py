@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-hvs)*#3k$y810gg+x^_*$e@vo+nu6gg42w29n#svw3&w8ce_sr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ifrc-sampling.azurewebsites.net']
+ALLOWED_HOSTS = ['ifrc-sampling.azurewebsites.net', '127.0.0.1']
 
 # Application definition
 
@@ -145,5 +145,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
-    'https://ifrc-sampling-2a1pyswev-hubamatyas.vercel.app',
+    'https://ifrc-sampling-3y1hbejgb-hubamatyas.vercel.app',
 ]
