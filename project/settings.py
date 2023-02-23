@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django',
         'USER': 'django@ifrc-sampling-db',
-        'PASSWORD': '',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 'ifrc-sampling-db.postgres.database.azure.com',
         'PORT': '5432',
         'OPTIONS': {
