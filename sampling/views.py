@@ -1,8 +1,11 @@
 from django.shortcuts import render, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from .SystematicRandom import SystematicRandom
 from .serializers import StateSerializer, OptionSerializer
 from .models import State, Option
+from .SimpleRandom import SimpleRandom
 
 
 # Create your views here.
@@ -52,17 +55,40 @@ def decisionTree(request, state_id):
     return Response(response)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def simpleRandom(request):
-    margin_of_error = float(request.query_params.get('margin_of_error'))
-    confidence_level = int(request.query_params.get('confidence_level'))
-    non_response_rate = float(request.query_params.get('non_response_rate'))
-    subgroups = int(request.query_params.get('subgroups'))
-    households = int(request.query_params.get('households'))
-    individuals = int(request.query_params.get('individuals'))
-    sample_size = simpleRandom.get_sample_size()
+    margin_of_error = float(request.data.get('margin_of_error'))
+    # print("margin of error=",margin_of_error)
+    confidence_level = int(request.data.get('confidence_level'))
+    non_response_rate = float(request.data.get('non_response_rate'))
+    subgroups = int(request.data.get('subgroups'))
+    households = int(request.data.get('households'))
+    individuals = int(request.data.get('individuals'))
+    simple_random = SimpleRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                 individuals=individuals, households=households,
+                                 non_response_rate=non_response_rate, subgroups=subgroups)
+    sample_size = simple_random.get_sample_size()
     response = {
         'sample size': sample_size
     }
+    # print("sample size = ",sample_size)
     return Response(response)
 
+
+@api_view(['POST'])
+def systematicRandom(request):
+    margin_of_error = float(request.data.get('margin_of_error'))
+    confidence_level = int(request.data.get('confidence_level'))
+    non_response_rate = float(request.data.get('non_response_rate'))
+    subgroups = int(request.data.get('subgroups'))
+    households = int(request.data.get('households'))
+    individuals = int(request.data.get('individuals'))
+    systematic_random = SystematicRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                         individuals=individuals, households=households,
+                                         non_response_rate=non_response_rate, subgroups=subgroups)
+    result = systematic_random.get_result()
+    response = {
+        'sample size': result
+    }
+    # print("result = ",result)
+    return Response(response)

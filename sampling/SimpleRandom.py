@@ -30,20 +30,21 @@ class SimpleRandom:
         self.individuals = individuals
         self.households = households
 
-        if individuals is not None:
+        if individuals != 0:
             self.individuals = individuals
             self.population_size = individuals
 
-        elif households is not None:
+        elif households != 0:
             self.households = households
             self.population_size = households * 4  # assumed the average number of people in a single household = 4
 
         else:
             raise ValueError("Either the number of individuals or the number of households must be specified")
 
-        if subgroups is None:
+        if subgroups == 0:
             self.sample_size = self.calculate_sample_size(self.population_size, self.margin_of_error,
                                                           self.confidence_level, self.non_response_rate)
+            #print("######################")
         else:
             self.sample_size = self.calculate_subgroup_sample_sizes(self.population_size, self.margin_of_error,
                                                                     self.confidence_level, self.non_response_rate,
@@ -52,10 +53,12 @@ class SimpleRandom:
     def calculate_sample_size(self, population_size, margin_of_error, confidence_level, non_response_rate):
 
         z = zscorecalculator(confidence_level)
-        numerator = (z * z * 0.5 * 0.5) / margin_of_error * margin_of_error
+        numerator = (z * z * 0.5 * 0.5) / (margin_of_error * margin_of_error*0.01*0.01)
+        # print(numerator)
         denominator = 1 + (numerator / population_size)
+        # print(denominator)
         ans = numerator / denominator
-        sample_size = ans/(1-(non_response_rate/100))
+        sample_size = ans / (1 - (non_response_rate / 100))
         return math.ceil(sample_size)
 
     # Stratified Random Sampling
@@ -71,3 +74,12 @@ class SimpleRandom:
 
     def get_sample_size(self):
         return self.sample_size
+
+
+# if __name__ == '__main__':
+#     simpleRandom = SimpleRandom(margin_of_error=5, confidence_level=95, individuals=100, households=0,
+#                                 non_response_rate=5, subgroups=0)
+#     # simple_random = SimpleRandom(0.05,95,100,0,5,0)
+#     # print(simple_random)
+#     sample_size = simpleRandom.get_sample_size()
+#     print(sample_size)
