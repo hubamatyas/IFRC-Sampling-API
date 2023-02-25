@@ -38,15 +38,12 @@ class SimpleRandom:
             self.households = households
             self.population_size = households * 4  # assumed the average number of people in a single household = 4
 
-        else:
-            raise ValueError("Either the number of individuals or the number of households must be specified")
-
         if subgroups == 0:
             self.sample_size = self.calculate_sample_size(self.population_size, self.margin_of_error,
                                                           self.confidence_level, self.non_response_rate)
             # print("######################")
         else:
-            self.sample_size = self.calculate_subgroup_sample_sizes(self.population_size, self.margin_of_error,
+            self.sample_size = self.calculate_subgroup_sample_sizes(self.margin_of_error,
                                                                     self.confidence_level, self.non_response_rate,
                                                                     self.subgroups)
 
@@ -62,22 +59,23 @@ class SimpleRandom:
         return math.ceil(sample_size)
 
     # Stratified Random Sampling
-    def calculate_subgroup_sample_sizes(self, population_size, margin_of_error, confidence_level, non_response_rate,
+    def calculate_subgroup_sample_sizes(self, margin_of_error, confidence_level, non_response_rate,
                                         subgroups):
-        subgroup_sample_sizes = {}
-        for subgroup, subgroup_size in subgroups.items():
-            subgroup_sample_size = self.calculate_sample_size(subgroup_size, margin_of_error, confidence_level,
-                                                              non_response_rate)
-            subgroup_sample_sizes[subgroup] = int(subgroup_sample_size)
-        sample_size = sum(subgroup_sample_sizes.values())
-        return math.ceil(sample_size)
+        result = []
+
+        for i in subgroups:
+            ans = self.calculate_sample_size(i['size'],margin_of_error,confidence_level,non_response_rate)
+            result.append(ans)
+        cumulative_sample_size = sum(result)
+        result.append(cumulative_sample_size)
+        # print(result)
+        return math.ceil(cumulative_sample_size)
 
     def get_sample_size(self):
         return self.sample_size
 
-#
 # if __name__ == '__main__':
-#     simpleRandom = SimpleRandom(margin_of_error=5, confidence_level=95, individuals=0, households=29,
+#     simpleRandom = SimpleRandom(margin_of_error=5, confidence_level=95, individuals=100, households=0,
 #                                 non_response_rate=0, subgroups=0)
 #     # simple_random = SimpleRandom(0.05,95,100,0,5,0)
 #     # print(simple_random)

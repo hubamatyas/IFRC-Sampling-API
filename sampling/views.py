@@ -61,14 +61,15 @@ def simpleRandom(request):
     # print("margin of error=",margin_of_error)
     confidence_level = int(request.data.get('confidence_level'))
     non_response_rate = float(request.data.get('non_response_rate'))
-    subgroups = int(request.data.get('subgroups'))
+    subgroups = request.data.get('subgroups')
     households = int(request.data.get('households'))
     individuals = int(request.data.get('individuals'))
+
     simple_random = SimpleRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                  individuals=individuals, households=households,
                                  non_response_rate=non_response_rate, subgroups=subgroups)
     sample_size = simple_random.get_sample_size()
-    print(sample_size)
+    print('sample_size=',sample_size)
     response = {
         'sampleSize': sample_size
     }
@@ -81,7 +82,7 @@ def systematicRandom(request):
     margin_of_error = float(request.data.get('margin_of_error'))
     confidence_level = int(request.data.get('confidence_level'))
     non_response_rate = float(request.data.get('non_response_rate'))
-    subgroups = int(request.data.get('subgroups')) if request.data.get('subgroups') else 0
+    subgroups = int(request.data.get('subgroups'))
     households = int(request.data.get('households'))
     individuals = int(request.data.get('individuals'))
     systematic_random = SystematicRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
