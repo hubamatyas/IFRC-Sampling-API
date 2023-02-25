@@ -44,7 +44,7 @@ class SimpleRandom:
         if subgroups == 0:
             self.sample_size = self.calculate_sample_size(self.population_size, self.margin_of_error,
                                                           self.confidence_level, self.non_response_rate)
-            #print("######################")
+            # print("######################")
         else:
             self.sample_size = self.calculate_subgroup_sample_sizes(self.population_size, self.margin_of_error,
                                                                     self.confidence_level, self.non_response_rate,
@@ -53,7 +53,7 @@ class SimpleRandom:
     def calculate_sample_size(self, population_size, margin_of_error, confidence_level, non_response_rate):
 
         z = zscorecalculator(confidence_level)
-        numerator = (z * z * 0.5 * 0.5) / (margin_of_error * margin_of_error*0.01*0.01)
+        numerator = (z * z * 0.5 * 0.5) / (margin_of_error * margin_of_error * 0.01 * 0.01)
         # print(numerator)
         denominator = 1 + (numerator / population_size)
         # print(denominator)
@@ -75,10 +75,10 @@ class SimpleRandom:
     def get_sample_size(self):
         return self.sample_size
 
-
+#
 # if __name__ == '__main__':
-#     simpleRandom = SimpleRandom(margin_of_error=5, confidence_level=95, individuals=100, households=0,
-#                                 non_response_rate=5, subgroups=0)
+#     simpleRandom = SimpleRandom(margin_of_error=5, confidence_level=95, individuals=0, households=29,
+#                                 non_response_rate=0, subgroups=0)
 #     # simple_random = SimpleRandom(0.05,95,100,0,5,0)
 #     # print(simple_random)
 #     sample_size = simpleRandom.get_sample_size()
