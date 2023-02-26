@@ -69,7 +69,7 @@ def simpleRandom(request):
                                  individuals=individuals, households=households,
                                  non_response_rate=non_response_rate, subgroups=subgroups)
     sample_size = simple_random.get_sample_size()
-    print('sample_size=',sample_size)
+    print('sample_size=', sample_size)
     response = {
         'sampleSize': sample_size
     }
@@ -93,5 +93,5 @@ def systematicRandom(request):
         'Result': result
     }
     # print("result = ",result)
-    print("Sample size sent")
+    # print("Sample size sent")
     return Response(response)

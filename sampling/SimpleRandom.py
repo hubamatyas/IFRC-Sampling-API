@@ -62,12 +62,14 @@ class SimpleRandom:
     def calculate_subgroup_sample_sizes(self, margin_of_error, confidence_level, non_response_rate,
                                         subgroups):
         result = []
-
+        # Format of subgroups : [{'name':'a','size':100},{'name':'b','size':200}]
         for i in subgroups:
-            ans = self.calculate_sample_size(i['size'],margin_of_error,confidence_level,non_response_rate)
+            # print(i)
+            ans = self.calculate_sample_size(i['size'], margin_of_error, confidence_level, non_response_rate)
             result.append(ans)
         cumulative_sample_size = sum(result)
         result.append(cumulative_sample_size)
+        # format of result : [sample_size_subgroup1,sample_size_subgroup2....,cumulative_sample_size]
         # print(result)
         return math.ceil(cumulative_sample_size)
 
