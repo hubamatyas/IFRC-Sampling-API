@@ -62,9 +62,8 @@ def simpleRandom(request):
     confidence_level = int(request.data.get('confidence_level'))
     non_response_rate = float(request.data.get('non_response_rate'))
     subgroups = request.data.get('subgroups')
-    households = int(request.data.get('households'))
-    individuals = int(request.data.get('individuals'))
-
+    households = int(request.data.get('households')) if request.data.get('households') else None
+    individuals = int(request.data.get('individuals')) if request.data.get('individuals') else None
     simple_random = SimpleRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                  individuals=individuals, households=households,
                                  non_response_rate=non_response_rate, subgroups=subgroups)

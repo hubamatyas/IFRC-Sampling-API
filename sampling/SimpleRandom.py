@@ -22,7 +22,7 @@ def zscorecalculator(ci):
 
 
 class SimpleRandom:
-    def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups):
+    def __init__(self,margin_of_error,confidence_level, individuals, households, non_response_rate, subgroups):
         self.margin_of_error = margin_of_error
         self.confidence_level = confidence_level
         self.non_response_rate = non_response_rate
@@ -30,15 +30,24 @@ class SimpleRandom:
         self.individuals = individuals
         self.households = households
 
-        if individuals != 0:
+        if margin_of_error is None:
+            raise ValueError("margin_of_error cannot be None")
+        if margin_of_error == 0:
+            raise ValueError("margin_of_error cannot be zero")
+        if confidence_level is None:
+            raise ValueError("confidence_level cannot be None")
+        if non_response_rate is None:
+            raise ValueError("non_response_rate cannot be None")
+
+        if individuals or households:
             self.individuals = individuals
-            self.population_size = individuals
-
-        elif households != 0:
             self.households = households
-            self.population_size = households * 4  # assumed the average number of people in a single household = 4
+            if individuals:
+                self.population_size = individuals
+            else:
+                self.population_size = households * 4  # assumed the average number of people in a single household = 4
 
-        if subgroups == 0:
+        if subgroups is None:
             self.sample_size = self.calculate_sample_size(self.population_size, self.margin_of_error,
                                                           self.confidence_level, self.non_response_rate)
             # print("######################")
@@ -70,7 +79,7 @@ class SimpleRandom:
         cumulative_sample_size = sum(result)
         result.append(cumulative_sample_size)
         # format of result : [sample_size_subgroup1,sample_size_subgroup2....,cumulative_sample_size]
-        # print(result)
+        print(result)
         return math.ceil(cumulative_sample_size)
 
     def get_sample_size(self):
@@ -78,7 +87,7 @@ class SimpleRandom:
 
 # if __name__ == '__main__':
 #     simpleRandom = SimpleRandom(margin_of_error=5, confidence_level=95, individuals=100, households=0,
-#                                 non_response_rate=0, subgroups=0)
+#                                 non_response_rate=0, subgroups=None)
 #     # simple_random = SimpleRandom(0.05,95,100,0,5,0)
 #     # print(simple_random)
 #     sample_size = simpleRandom.get_sample_size()
