@@ -57,40 +57,57 @@ def decisionTree(request, state_id):
 
 @api_view(['POST'])
 def simpleRandom(request):
-    margin_of_error = float(request.data.get('margin_of_error'))
-    # print("margin of error=",margin_of_error)
-    confidence_level = int(request.data.get('confidence_level'))
-    non_response_rate = float(request.data.get('non_response_rate'))
-    subgroups = request.data.get('subgroups')
-    households = int(request.data.get('households')) if request.data.get('households') else None
-    individuals = int(request.data.get('individuals')) if request.data.get('individuals') else None
+    data = request.data
+    margin_of_error = data['margin_of_error']
+    confidence_level = data['confidence_level']
+    non_response_rate = data['non_response_rate']
+    subgroups = data['subgroups']
+    households = data['households'] if data['households'] else None
+    individuals = data['individuals'] if data['individuals'] else None
     simple_random = SimpleRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                  individuals=individuals, households=households,
                                  non_response_rate=non_response_rate, subgroups=subgroups)
-    sample_size = simple_random.get_sample_size()
-    print('sample_size=', sample_size)
-    response = {
-        'sampleSize': sample_size
-    }
-    # print("sample size sent = ", sample_size)
-    return Response(response)
+    try:
+        simple_random.start_calculation()
+        sample_size = simple_random.get_sample_size()
+        response = {
+            'status': 'success',
+            'sampleSize': sample_size
+        }
+        return Response(response)
+    except ValueError as e:
+        # print("Error=", e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
 
 
 @api_view(['POST'])
 def systematicRandom(request):
-    margin_of_error = float(request.data.get('margin_of_error'))
-    confidence_level = int(request.data.get('confidence_level'))
-    non_response_rate = float(request.data.get('non_response_rate'))
-    subgroups = int(request.data.get('subgroups'))
-    households = int(request.data.get('households'))
-    individuals = int(request.data.get('individuals'))
+    data = request.data
+    margin_of_error = data['margin_of_error']
+    confidence_level = data['confidence_level']
+    non_response_rate = data['non_response_rate']
+    subgroups = data['subgroups']
+    households = data['households'] if data['households'] else None
+    individuals = data['individuals'] if data['individuals'] else None
     systematic_random = SystematicRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                          individuals=individuals, households=households,
                                          non_response_rate=non_response_rate, subgroups=subgroups)
-    result = systematic_random.get_result()
-    response = {
-        'Result': result
-    }
-    # print("result = ",result)
-    # print("Sample size sent")
-    return Response(response)
+    try:
+        systematic_random.start_calculation()
+        intervals = systematic_random.get_intervals()
+        response = {
+            'status': 'success',
+            'Intervals': intervals
+        }
+        return Response(response)
+    except ValueError as e:
+        # print("Error=", e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
