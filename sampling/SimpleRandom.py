@@ -30,11 +30,15 @@ class SimpleRandom:
             raise ValueError("margin_of_error cannot be negative")
         if self.margin_of_error > 100:
             raise ValueError("margin_of_error cannot be greater than 100")
+        if self.margin_of_error is not float:
+            raise TypeError("margin_of_error can only be a number")
 
         if self.confidence_level is None:
             raise ValueError("confidence_level cannot be None")
         if self.confidence_level not in [99, 95, 90, 85, 80]:
             raise ValueError("confidence_level incorrect value raised")
+        if self.confidence_level is not int:
+            raise TypeError("confidence_level can only be a number")
 
         if self.non_response_rate is None:
             raise ValueError("non_response_rate cannot be None")
@@ -42,6 +46,13 @@ class SimpleRandom:
             raise ValueError("non_response_rate cannot be negative")
         if self.non_response_rate > 100:
             raise ValueError("non_response_rate cannot be greater than 100")
+        if self.non_response_rate is not float:
+            raise TypeError("non_response_rate can only be a number")
+
+        if self.individuals is not int:
+            raise TypeError("number of individuals can only be a number")
+        if self.households is not int:
+            raise TypeError("number of households can only be a number")
 
     def start_calculation(self):
         self.validate_inputs()
@@ -82,9 +93,9 @@ class SimpleRandom:
             # print(subgroup)
             ans = self.calculate_sample_size(subgroup['size'], margin_of_error, confidence_level, non_response_rate)
             subgroup_sample_size[subgroup['name']] = ans
-        cumulative_sample_size = sum(subgroup_sample_size.values())
+        # cumulative_sample_size = sum(subgroup_sample_size.values())
         # Format of subgroup_sample_size = {'a':sample_size_a , 'b':sample_size_b}
-        return math.ceil(cumulative_sample_size)
+        return subgroup_sample_size
 
     def get_sample_size(self):
         if self.sample_size is None:
