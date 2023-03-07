@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-hvs)*#3k$y810gg+x^_*$e@vo+nu6gg42w29n#svw3&w8ce_sr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ifrc-sampling.azurewebsites.net', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','ifrc-sampling.azurewebsites.net','localhost']
 
 # Application definition
 
@@ -78,7 +78,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-CSRF_TRUSTED_ORIGINS = ['https://ifrc-sampling.azurewebsites.net','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://ifrc-sampling.azurewebsites.net','https://*.127.0.0.1','http://localhost:3000']
 
 
 # Database
