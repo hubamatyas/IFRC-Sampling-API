@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1','ifrc-sampling.azurewebsites.net','localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -145,5 +146,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
-    'https://ifrc-sampling-2a1pyswev-hubamatyas.vercel.app',
+    'https://ifrc-sampling-3y1hbejgb-hubamatyas.vercel.app',
 ]

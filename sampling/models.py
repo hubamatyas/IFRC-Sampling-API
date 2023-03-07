@@ -4,16 +4,16 @@ from django.db import models
 class State(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=1000)
-    parent_id = models.IntegerField(null=True)
-    description = models.TextField(max_length=5000, null=True)
+    parent_state = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    term = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 class Option(models.Model):
     state = models.ForeignKey(State, on_delete=models.CASCADE)
-    option = models.CharField(max_length=100)
-    child_state = models.ForeignKey(State, on_delete=models.CASCADE, related_name='child_id', null=True)
+    name = models.CharField(max_length=100)
+    child_state = models.ForeignKey(State, on_delete=models.CASCADE, null=True, related_name='child_state', blank=True)
 
     def __str__(self):
-        return self.option
+        return self.name
