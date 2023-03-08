@@ -62,8 +62,9 @@ def simpleRandom(request):
     confidence_level = data['confidence_level']
     non_response_rate = data['non_response_rate']
     subgroups = data['subgroups']
-    households = data['households'] if data['households'] else None
-    individuals = data['individuals'] if data['individuals'] else None
+    households = data['households'] if data['households'] and data['households'] != 0 else None
+    individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
+
     simple_random = SimpleRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                  individuals=individuals, households=households,
                                  non_response_rate=non_response_rate, subgroups=subgroups)
@@ -72,11 +73,16 @@ def simpleRandom(request):
         sample_size = simple_random.get_sample_size()
         response = {
             'status': 'success',
-            'sampleSize': sample_size
+            'sample_size': sample_size
         }
         return Response(response)
     except ValueError as e:
-        # print("Error=", e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+    except TypeError as e:
         response = {
             'status': 'error',
             'error_message': str(e)
@@ -91,8 +97,8 @@ def systematicRandom(request):
     confidence_level = data['confidence_level']
     non_response_rate = data['non_response_rate']
     subgroups = data['subgroups']
-    households = data['households'] if data['households'] else None
-    individuals = data['individuals'] if data['individuals'] else None
+    households = data['households'] if data['households'] and data['households'] != 0 else None
+    individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
     systematic_random = SystematicRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                          individuals=individuals, households=households,
                                          non_response_rate=non_response_rate, subgroups=subgroups)
@@ -101,11 +107,18 @@ def systematicRandom(request):
         intervals = systematic_random.get_intervals()
         response = {
             'status': 'success',
-            'Intervals': intervals
+            'intervals': intervals
         }
         return Response(response)
     except ValueError as e:
-        # print("Error=", e)
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+    except TypeError as e:
+        print(e)
         response = {
             'status': 'error',
             'error_message': str(e)

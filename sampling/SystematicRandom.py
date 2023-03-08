@@ -9,16 +9,16 @@ class SystematicRandom(SimpleRandom):
 
     def start_calculation(self):
         if self.subgroups is None:
-            sample_size = self.get_sample_size()
-            interval = math.ceil(self.population_size / sample_size)  # The step count
-            self.intervals = interval
+            sample_size = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level, self.non_response_rate)
+            interval = math.ceil(self.population_size / sample_size['total'])  # The step count
+            self.intervals = {'total': interval}
         else:
             self.intervals = {}
             for subgroup in self.subgroups:
                 subgroup_size = subgroup['size']
                 subgroup_sample_size = self.calculate_sample_size(subgroup_size, self.margin_of_error,
                                                                   self.confidence_level, self.non_response_rate)
-                subgroup_interval = math.ceil(subgroup_size / subgroup_sample_size)
+                subgroup_interval = math.ceil(subgroup_size / subgroup_sample_size['total'])
                 # Format of subgroups : [{'name':'a','size':100},{'name':'b','size':200}]
                 self.intervals[subgroup['name']] = subgroup_interval
 

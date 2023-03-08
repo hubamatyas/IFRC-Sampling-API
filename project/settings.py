@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['127.0.0.1','ifrc-sampling.azurewebsites.net','localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'whitenoise.runserver_nostatic'
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-CSRF_TRUSTED_ORIGINS = ['https://ifrc-sampling.azurewebsites.net','https://*.127.0.0.1','http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = [
+    'https://ifrc-sampling.azurewebsites.net',
+    'https://*.127.0.0.1',
+    'http://localhost:3000',
+    'https://ifrc-sampling.vercel.app/',
+    'https://ifrc-sampling.vercel.app'
+    ]
 
 
 # Database
@@ -147,4 +153,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'https://ifrc-sampling-3y1hbejgb-hubamatyas.vercel.app',
+    'https://ifrc-sampling.vercel.app/',
+    'https://ifrc-sampling.vercel.app'
 ]

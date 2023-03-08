@@ -7,11 +7,12 @@ DF = 0.01  # Percentage to decimal factor
 
 class SimpleRandom:
     def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups):
-        self.margin_of_error = float(margin_of_error)
+        self.check_inputs(margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups)
+        self.margin_of_error = int(margin_of_error)
         self.confidence_level = int(confidence_level)
         self.individuals = int(individuals) if individuals else None
         self.households = int(households) if households else None
-        self.non_response_rate = float(non_response_rate) if non_response_rate else 0
+        self.non_response_rate = int(non_response_rate) if non_response_rate else 0
         self.subgroups = subgroups
         self.sample_size = None
         if self.individuals or self.households:
@@ -21,6 +22,16 @@ class SimpleRandom:
                 self.population_size = self.households * 4  # assumed the average number of people in a single
                 # household = 4
 
+    def check_inputs(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups):
+        if not isinstance(margin_of_error, int) and margin_of_error is not None:
+            raise TypeError("margin_of_error can only be a number")
+        if not isinstance(confidence_level, int) and confidence_level is not None:
+            raise TypeError("confidence_level can only be a number")
+        if not isinstance(individuals, int) and individuals is not None:
+            raise TypeError("number of individuals can only be a number")
+        if not isinstance(households, int) and households is not None:
+            raise TypeError("number of households can only be a number")
+        
     def validate_inputs(self):
         if self.margin_of_error is None:
             raise ValueError("margin_of_error cannot be None")
@@ -30,30 +41,19 @@ class SimpleRandom:
             raise ValueError("margin_of_error cannot be negative")
         if self.margin_of_error > 100:
             raise ValueError("margin_of_error cannot be greater than 100")
-        if self.margin_of_error is not float:
-            raise TypeError("margin_of_error can only be a number")
-
+        
         if self.confidence_level is None:
             raise ValueError("confidence_level cannot be None")
         if self.confidence_level not in [99, 95, 90, 85, 80]:
             raise ValueError("confidence_level incorrect value raised")
-        if self.confidence_level is not int:
-            raise TypeError("confidence_level can only be a number")
-
+        
         if self.non_response_rate is None:
             raise ValueError("non_response_rate cannot be None")
         if self.non_response_rate < 0:
             raise ValueError("non_response_rate cannot be negative")
         if self.non_response_rate > 100:
             raise ValueError("non_response_rate cannot be greater than 100")
-        if self.non_response_rate is not float:
-            raise TypeError("non_response_rate can only be a number")
-
-        if self.individuals is not int:
-            raise TypeError("number of individuals can only be a number")
-        if self.households is not int:
-            raise TypeError("number of households can only be a number")
-
+        
     def start_calculation(self):
         self.validate_inputs()
         if self.subgroups is not None:
@@ -81,7 +81,7 @@ class SimpleRandom:
         # print(denominator)
         ans = numerator / denominator
         sample_size = ans / (1 - (non_response_rate / 100))
-        return math.ceil(sample_size)
+        return {"total": math.ceil(sample_size)}
 
     # Stratified Random Sampling
     def calculate_subgroup_sample_sizes(self, margin_of_error, confidence_level, non_response_rate,
@@ -92,7 +92,7 @@ class SimpleRandom:
         for subgroup in subgroups:
             # print(subgroup)
             ans = self.calculate_sample_size(subgroup['size'], margin_of_error, confidence_level, non_response_rate)
-            subgroup_sample_size[subgroup['name']] = ans
+            subgroup_sample_size[subgroup['name']] = ans['total']
         # cumulative_sample_size = sum(subgroup_sample_size.values())
         # Format of subgroup_sample_size = {'a':sample_size_a , 'b':sample_size_b}
         return subgroup_sample_size
