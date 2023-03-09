@@ -74,7 +74,7 @@ class TimeLocation(SimpleRandom):
                 day_dict = {day: output_dict[location][day]}
                 location_dict[location].append(day_dict)
             units.append(location_dict)
-        return units
+        self.units = units
 
     def get_units(self):
         if self.units is None:

@@ -124,3 +124,43 @@ def systematicRandom(request):
             'error_message': str(e)
         }
         return Response(response, status=400)
+
+@api_view(['POST'])
+def timeLocation(request):
+    data = request.data
+    margin_of_error = data['margin_of_error']
+    confidence_level = data['confidence_level']
+    non_response_rate = data['non_response_rate']
+    subgroups = data['subgroups']
+    households = data['households'] if data['households'] and data['households'] != 0 else None
+    individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
+    locations = data['locations'] if data['locations'] and data['locations'] != 0 else None
+    days = data['days'] if data['days'] and data['days'] != 0 else None
+
+    time_location = TimeLocation(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                          individuals=individuals, households=households,
+                                          non_response_rate=non_response_rate, subgroups=subgroups,locations = locations,days = days )
+    try:
+        time_location_units = time_location.generate_time_location_combinations(locations,days)
+        selected_units = time_location.select_random_units(time_location_units)
+        time_location.generate_desired_output(selected_units)
+        units = time_location.get_units()
+
+        response = {
+            'status': 'success',
+            'units': units
+        }
+        return Response(response)
+    except ValueError as e:
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+    except TypeError as e:
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+
