@@ -1,17 +1,20 @@
-
 import math
+import random
+
 from sampling.SimpleRandom import SimpleRandom
 
-time_slots = ['morning','evening']
+time_slots = ['morning', 'evening']
+
 
 class TimeLocation(SimpleRandom):
-    def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups):
+    def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups,
+                 locations, days):
         super().__init__(margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups)
-        self.locations = None
-        self.days = None
+        self.locations = locations
+        self.days = days
         self.units = None
 
-    def generate_time_location_combinations(self, locations,days):
+    def generate_time_location_combinations(self, locations, days):
         time_location_units = []
         for loc in range(1, locations + 1):
             for day in range(1, days + 1):
@@ -19,16 +22,19 @@ class TimeLocation(SimpleRandom):
                     time_location_units.append((loc, day, slot))
         return time_location_units
 
-    def select_random_units(self,time_location_units):
+    def select_random_units(self, time_location_units):
         # Make sure that interviews_per_session is at least 10
-        interviews_per_session = max(int(population / len(time_location_units)), 10)
+        interviews_per_session = max(int(self.population_size / len(time_location_units)), 10)
+
+        result = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level,
+                                                 self.non_response_rate)
+        sample_size = result['total']
 
         # The total number of units to be selected
-        num_units_to_select = int(sample_size/interviews_per_session)
+        num_units_to_select = int(sample_size / interviews_per_session)
 
-        sample_size = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level, self.non_response_rate)
-
-        while len(selected_tuples) < num_units_to_select+1:
+        selected_subset = []
+        while len(selected_subset) < num_units_to_select + 1:
             # Select a random subset of tuples
             selected_subset = random.sample(time_location_units, num_units_to_select)
 
@@ -43,17 +49,17 @@ class TimeLocation(SimpleRandom):
                     selected_subset.pop()
                 return selected_subset
         # If the loop completes without selecting the required number of tuples, start the selection process again
-        return select_random_tuples(self,time_location_units)
+        return self.select_random_units(self, time_location_units)
 
-    def generate_desired_output(selected_subset):
+    def generate_desired_output(self, selected_subset):
         # Create a dictionary to store the output
         output_dict = {}
 
         # Loop through each tuple in the list
-        for tuple in time_location_units:
-            location = f"Location{tuple[0]}"
-            day = f"Day{tuple[1]}"
-            time = tuple[2]
+        for subset in selected_subset:
+            location = f"Location{subset[0]}"
+            day = f"Day{subset[1]}"
+            time = subset[2]
 
             # Check if the location exists in the dictionary, if not add it
             if location not in output_dict:
@@ -76,9 +82,23 @@ class TimeLocation(SimpleRandom):
             units.append(location_dict)
         self.units = units
 
+    def start_calculation(self):
+        time_location_units = self.generate_time_location_combinations(self.locations,self.days)
+        selected_subset = self.select_random_units(time_location_units)
+        self.generate_desired_output(selected_subset)
+
     def get_units(self):
         if self.units is None:
             raise ValueError("units are not initialized")
         return self.units
 
 
+
+
+
+# if __name__ == '__main__':
+#     timeLocation = TimeLocation(margin_of_error=5, confidence_level=95, individuals=100, households=0,
+#                                 non_response_rate=0, subgroups=None,locations=3,days=5)
+#     timeLocation.start_calculation()
+#     result = timeLocation.get_units()
+#     print(result)
