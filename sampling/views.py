@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .SystematicRandom import SystematicRandom
+from .TimeLocation import TimeLocation
 from .serializers import StateSerializer, OptionSerializer
 from .models import State, Option
 from .SimpleRandom import SimpleRandom
@@ -125,6 +126,7 @@ def systematicRandom(request):
         }
         return Response(response, status=400)
 
+
 @api_view(['POST'])
 def timeLocation(request):
     data = request.data
@@ -138,12 +140,11 @@ def timeLocation(request):
     days = data['days'] if data['days'] and data['days'] != 0 else None
 
     time_location = TimeLocation(margin_of_error=margin_of_error, confidence_level=confidence_level,
-                                          individuals=individuals, households=households,
-                                          non_response_rate=non_response_rate, subgroups=subgroups,locations = locations,days = days )
+                                 individuals=individuals, households=households,
+                                 non_response_rate=non_response_rate, subgroups=subgroups, locations=locations,
+                                 days=days)
     try:
-        time_location_units = time_location.generate_time_location_combinations(locations,days)
-        selected_units = time_location.select_random_units(time_location_units)
-        time_location.generate_desired_output(selected_units)
+        timeLocation.start_calculation()
         units = time_location.get_units()
 
         response = {
@@ -163,4 +164,3 @@ def timeLocation(request):
             'error_message': str(e)
         }
         return Response(response, status=400)
-
