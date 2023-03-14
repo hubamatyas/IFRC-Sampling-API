@@ -133,18 +133,16 @@ def timeLocation(request):
     margin_of_error = data['margin_of_error']
     confidence_level = data['confidence_level']
     non_response_rate = data['non_response_rate']
-    subgroups = data['subgroups']
     households = data['households'] if data['households'] and data['households'] != 0 else None
     individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
     locations = data['locations'] if data['locations'] and data['locations'] != 0 else None
     days = data['days'] if data['days'] and data['days'] != 0 else None
-
     time_location = TimeLocation(margin_of_error=margin_of_error, confidence_level=confidence_level,
                                  individuals=individuals, households=households,
-                                 non_response_rate=non_response_rate, subgroups=subgroups, locations=locations,
+                                 non_response_rate=non_response_rate, subgroups=None, locations=locations,
                                  days=days)
     try:
-        timeLocation.start_calculation()
+        time_location.start_calculation()
         units = time_location.get_units()
 
         response = {
@@ -153,12 +151,14 @@ def timeLocation(request):
         }
         return Response(response)
     except ValueError as e:
+        print(e)
         response = {
             'status': 'error',
             'error_message': str(e)
         }
         return Response(response, status=400)
     except TypeError as e:
+        print(e)
         response = {
             'status': 'error',
             'error_message': str(e)

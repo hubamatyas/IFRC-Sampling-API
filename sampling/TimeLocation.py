@@ -29,7 +29,7 @@ class TimeLocation(SimpleRandom):
         result = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level,
                                                  self.non_response_rate)
         sample_size = result['total']
-
+        
         # The total number of units to be selected
         num_units_to_select = int(sample_size / interviews_per_session)
 
