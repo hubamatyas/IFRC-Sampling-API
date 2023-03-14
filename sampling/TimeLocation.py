@@ -8,11 +8,19 @@ time_slots = ['morning', 'evening']
 
 class TimeLocation(SimpleRandom):
     def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups,
-                 locations, days):
+                 locations, days, interviews_per_session):
         super().__init__(margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups)
         self.locations = locations
         self.days = days
+        self.interviews_per_session = max(interviews_per_session, 10)
         self.units = None
+
+    def validate_inputs(self):
+        result = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level,
+                                            self.non_response_rate)
+        sample_size = result['total']
+        if self.interviews_per_session > sample_size:
+            raise ValueError("Interviews per session cannot be greater than sample size")
 
     def generate_time_location_combinations(self, locations, days):
         time_location_units = []
@@ -24,32 +32,40 @@ class TimeLocation(SimpleRandom):
 
     def select_random_units(self, time_location_units):
         # Make sure that interviews_per_session is at least 10
-        interviews_per_session = max(int(self.population_size / len(time_location_units)), 10)
+        # interviews_per_session = max(int(self.population_size / len(time_location_units)), 10)
 
         result = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level,
-                                                 self.non_response_rate)
+                                            self.non_response_rate)
         sample_size = result['total']
-        
-        # The total number of units to be selected
-        num_units_to_select = int(sample_size / interviews_per_session)
+        # print("sample_size", sample_size)
 
-        selected_subset = []
-        while len(selected_subset) < num_units_to_select + 1:
-            # Select a random subset of tuples
-            selected_subset = random.sample(time_location_units, num_units_to_select)
+        # The total number of units to be selected
+        num_units_to_select = math.ceil(sample_size / self.interviews_per_session)
+        # print("num_units_to_select", num_units_to_select)
+
+        selected_subset = random.sample(time_location_units, num_units_to_select)
+        # print("selected subset=", selected_subset)
+        found_valid_selection = False
+        while not found_valid_selection:
 
             # Check if the sum of interviews per session is equal to the sample size
-            interviews = sum([interviews_per_session for _ in selected_subset])
+            interviews = sum([self.interviews_per_session for _ in selected_subset])
+            # print("interviews", interviews)
             if interviews == sample_size:
-                return selected_subset
+                found_valid_selection = True
             elif interviews > sample_size:
                 # If the sum of interviews exceeds the sample size, remove the last tuple from the selection
                 excess = interviews - sample_size
-                for _ in range(excess):
+                if excess <= self.interviews_per_session:
                     selected_subset.pop()
-                return selected_subset
-        # If the loop completes without selecting the required number of tuples, start the selection process again
-        return self.select_random_units(self, time_location_units)
+                    found_valid_selection = True
+                else:
+                    number_units_to_delete = int(excess / self.interviews_per_session)
+                    for i in range(number_units_to_delete):
+                        selected_subset.pop()
+                        found_valid_selection = True
+
+        return selected_subset
 
     def generate_desired_output(self, selected_subset):
         # Create a dictionary to store the output
@@ -83,7 +99,8 @@ class TimeLocation(SimpleRandom):
         self.units = units
 
     def start_calculation(self):
-        time_location_units = self.generate_time_location_combinations(self.locations,self.days)
+        self.validate_inputs()
+        time_location_units = self.generate_time_location_combinations(self.locations, self.days)
         selected_subset = self.select_random_units(time_location_units)
         self.generate_desired_output(selected_subset)
 
@@ -93,12 +110,9 @@ class TimeLocation(SimpleRandom):
         return self.units
 
 
-
-
-
 # if __name__ == '__main__':
-#     timeLocation = TimeLocation(margin_of_error=5, confidence_level=95, individuals=100, households=0,
-#                                 non_response_rate=0, subgroups=None,locations=3,days=5)
+#     timeLocation = TimeLocation(margin_of_error=5, confidence_level=95, individuals=500, households=0,
+#                                 non_response_rate=0, subgroups=None, locations=5, days=8, interviews_per_session=20)
 #     timeLocation.start_calculation()
 #     result = timeLocation.get_units()
 #     print(result)
