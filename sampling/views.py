@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .ClusterRandom import ClusterRandom
 from .SystematicRandom import SystematicRandom
 from .serializers import StateSerializer, OptionSerializer
 from .models import State, Option
@@ -109,6 +110,44 @@ def systematicRandom(request):
             'status': 'success',
             'intervals': intervals
         }
+        return Response(response)
+    except ValueError as e:
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+    except TypeError as e:
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+
+
+@api_view(['POST'])
+def clusterRandom(request):
+    data = request.data
+    margin_of_error = data['margin_of_error']
+    confidence_level = data['confidence_level']
+    non_response_rate = data['non_response_rate']
+    households = data['households'] if data['households'] and data['households'] != 0 else None
+    individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
+    communities = data['locations'] if data['communities'] and data['communities'] != 0 else None
+    cluster_random = ClusterRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                   individuals=individuals, households=households,
+                                   non_response_rate=non_response_rate, subgroups=None, communities=communities)
+    try:
+        cluster_random.start_calculation()
+        clusters = cluster_random.get_clusters()
+
+        response = {
+            'status': 'success',
+            'clusters': clusters
+        }
+        print("clusters = ", clusters)
         return Response(response)
     except ValueError as e:
         print(e)

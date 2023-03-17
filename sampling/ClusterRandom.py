@@ -12,6 +12,7 @@ data_display = "The results for the sampling plan indicate they are not practica
                "depending on whether or not you have an existing list frame. The results will not be representative " \
                "across the entire population, but will be representative for each geographical unit on its own."
 
+
 class ClusterRandom(SimpleRandom):
     def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups,
                  communities):
@@ -82,12 +83,16 @@ class ClusterRandom(SimpleRandom):
             if len(cluster_location) > max_clusters_per_location:
                 return data_display
 
+    def start_calculation(self):
+        community_sample_sizes = clusterRandom.community_sample_sizes_calculation()
+        clusterRandom.assign_clusters(communities, community_sample_sizes)
+        result = clusterRandom.check_clusters()
+
+
 if __name__ == '__main__':
     communities = {'A': 500, 'B': 150, 'C': 100, 'D': 300}
     clusterRandom = ClusterRandom(5, 95, None, None, 0, None, communities)
-    community_sample_sizes = clusterRandom.community_sample_sizes_calculation()
-    clusterRandom.assign_clusters(communities, community_sample_sizes)
+    clusterRandom.start_calculation()
     clusters = clusterRandom.get_clusters()
-    result = clusterRandom.check_clusters()
     print(clusters)
     # print(result)
