@@ -4,7 +4,13 @@ import random
 from sampling.SimpleRandom import SimpleRandom
 
 total_clusters = 30
+max_clusters_per_location = 0.8 * 30
 
+data_display = "The results for the sampling plan indicate they are not practical for implementation. This can " \
+               "happen when there are large variances in population across geographical units. It is suggested to " \
+               "instead use a simple or systematic random sampling approach for each geographical unit separately, " \
+               "depending on whether or not you have an existing list frame. The results will not be representative " \
+               "across the entire population, but will be representative for each geographical unit on its own."
 
 class ClusterRandom(SimpleRandom):
     def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups,
@@ -70,10 +76,18 @@ class ClusterRandom(SimpleRandom):
             raise ValueError("Clusters not initialized")
         return self.clusters
 
-# if __name__ == '__main__':
-#     communities = {'A': 150, 'B': 500, 'C': 100, 'D': 350}
-#     clusterRandom = ClusterRandom(5, 95, None, None, 0, None, communities)
-#     community_sample_sizes = clusterRandom.community_sample_sizes_calculation()
-#     clusterRandom.assign_clusters(communities, community_sample_sizes)
-#     clusters = clusterRandom.get_clusters()
-#     print(clusters)
+    def check_clusters(self):
+        for cluster_name in self.clusters:
+            cluster_location = self.clusters[cluster_name]
+            if len(cluster_location) > max_clusters_per_location:
+                return data_display
+
+if __name__ == '__main__':
+    communities = {'A': 500, 'B': 150, 'C': 100, 'D': 300}
+    clusterRandom = ClusterRandom(5, 95, None, None, 0, None, communities)
+    community_sample_sizes = clusterRandom.community_sample_sizes_calculation()
+    clusterRandom.assign_clusters(communities, community_sample_sizes)
+    clusters = clusterRandom.get_clusters()
+    result = clusterRandom.check_clusters()
+    print(clusters)
+    # print(result)
