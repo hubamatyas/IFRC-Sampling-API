@@ -14,12 +14,7 @@ class SimpleRandom:
         self.non_response_rate = float(non_response_rate) if non_response_rate else 0
         self.subgroups = subgroups
         self.sample_size = None
-        if self.individuals or self.households:
-            if self.individuals:
-                self.population_size = self.individuals
-            else:
-                self.population_size = self.households  
-                
+        self.population_size = self.individuals or self.households
 
     def validate_inputs(self):
         if self.margin_of_error is None:
