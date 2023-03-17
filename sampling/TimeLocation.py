@@ -88,13 +88,15 @@ class TimeLocation(SimpleRandom):
             # Add the time slot to the day list
             output_dict[location][day].append(time)
 
-        # Convert the dictionary to the desired output format
+        # Convert the dictionary to the desired and sorted output format
         units = []
-        for location in output_dict:
+        for location in sorted(output_dict):
             location_dict = {location: []}
-            for day in output_dict[location]:
+            for day in sorted(output_dict[location]):
                 day_dict = {day: output_dict[location][day]}
                 location_dict[location].append(day_dict)
+            # Sort the days in each location
+            location_dict[location] = sorted(location_dict[location], key=lambda x: list(x.keys())[0])
             units.append(location_dict)
         self.units = units
 
@@ -110,9 +112,9 @@ class TimeLocation(SimpleRandom):
         return self.units
 
 
-# if __name__ == '__main__':
-#     timeLocation = TimeLocation(margin_of_error=5, confidence_level=95, individuals=500, households=0,
-#                                 non_response_rate=0, subgroups=None, locations=5, days=8, interviews_per_session=20)
-#     timeLocation.start_calculation()
-#     result = timeLocation.get_units()
-#     print(result)
+if __name__ == '__main__':
+    timeLocation = TimeLocation(margin_of_error=5, confidence_level=95, individuals=500, households=0,
+                                non_response_rate=0, subgroups=None, locations=5, days=8, interviews_per_session=20)
+    timeLocation.start_calculation()
+    result = timeLocation.get_units()
+    print(result)
