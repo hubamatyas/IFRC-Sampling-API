@@ -18,8 +18,8 @@ class SimpleRandom:
             if self.individuals:
                 self.population_size = self.individuals
             else:
-                self.population_size = self.households * 4  # assumed the average number of people in a single
-                # household = 4
+                self.population_size = self.households  
+                
 
     def validate_inputs(self):
         if self.margin_of_error is None:
