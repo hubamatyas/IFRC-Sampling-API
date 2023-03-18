@@ -130,15 +130,12 @@ def systematicRandom(request):
 @api_view(['POST'])
 def clusterRandom(request):
     data = request.data
-    margin_of_error = data['margin_of_error']
-    confidence_level = data['confidence_level']
-    non_response_rate = data['non_response_rate']
-    households = data['households'] if data['households'] and data['households'] != 0 else None
-    individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
-    communities = data['locations'] if data['communities'] and data['communities'] != 0 else None
+    margin_of_error = int(data['margin_of_error'])
+    confidence_level = int(data['confidence_level'])
+    communities = data['communities']
     cluster_random = ClusterRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
-                                   individuals=individuals, households=households,
-                                   non_response_rate=non_response_rate, subgroups=None, communities=communities)
+                                   individuals=None, households=None,
+                                   non_response_rate=None, subgroups=None, communities=communities)
     try:
         cluster_random.start_calculation()
         clusters = cluster_random.get_clusters()
