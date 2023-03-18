@@ -61,7 +61,9 @@ class ClusterRandom(SimpleRandom):
                         community_sample_sizes[name] * total_assigned_clusters)
                 for i in range(remaining_clusters):
                     random_number = random.uniform(0, remaining_population)
-                    for name, population in communities.items():
+                    for community in communities:
+                        name = community['name']
+                        population = community['size']
                         if random_number < population:
                             community_clusters[name] += 1
                             remaining_population -= population
