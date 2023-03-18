@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from .ClusterRandom import ClusterRandom
 from .SystematicRandom import SystematicRandom
+from .TimeLocation import TimeLocation
 from .serializers import StateSerializer, OptionSerializer
 from .models import State, Option
 from .SimpleRandom import SimpleRandom
@@ -128,6 +129,32 @@ def systematicRandom(request):
 
 
 @api_view(['POST'])
+def timeLocation(request):
+    data = request.data
+    margin_of_error = data['margin_of_error']
+    confidence_level = data['confidence_level']
+    non_response_rate = data['non_response_rate']
+    households = data['households'] if data['households'] and data['households'] != 0 else None
+    individuals = data['individuals'] if data['individuals'] and data['individuals'] != 0 else None
+    locations = data['locations'] if data['locations'] and data['locations'] != 0 else None
+    days = data['days'] if data['days'] and data['days'] != 0 else None
+    interviews_per_session = data['interviews_per_session']
+    # subgroups = data['subgroups'] if data['subgroups'] else None
+    time_location = TimeLocation(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                 individuals=individuals, households=households,
+                                 non_response_rate=non_response_rate, subgroups=None, locations=locations,
+                                 days=days, interviews_per_session=interviews_per_session)
+    try:
+        time_location.start_calculation()
+        units = time_location.get_units()
+
+        response = {
+            'status': 'success',
+            'units': units
+        }
+        # print("units = ", units)
+
+@api_view(['POST'])
 def clusterRandom(request):
     data = request.data
     margin_of_error = int(data['margin_of_error'])
@@ -144,7 +171,6 @@ def clusterRandom(request):
             'status': 'success',
             'clusters': clusters
         }
-        print("clusters = ", clusters)
         return Response(response)
     except ValueError as e:
         print(e)
