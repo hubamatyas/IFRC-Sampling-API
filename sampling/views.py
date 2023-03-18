@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .ClusterRandom import ClusterRandom
 from .SystematicRandom import SystematicRandom
 from .TimeLocation import TimeLocation
 from .serializers import StateSerializer, OptionSerializer
@@ -152,6 +153,24 @@ def timeLocation(request):
             'units': units
         }
         # print("units = ", units)
+
+@api_view(['POST'])
+def clusterRandom(request):
+    data = request.data
+    margin_of_error = int(data['margin_of_error'])
+    confidence_level = int(data['confidence_level'])
+    communities = data['communities']
+    cluster_random = ClusterRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                   individuals=None, households=None,
+                                   non_response_rate=None, subgroups=None, communities=communities)
+    try:
+        cluster_random.start_calculation()
+        clusters = cluster_random.get_clusters()
+
+        response = {
+            'status': 'success',
+            'clusters': clusters
+        }
         return Response(response)
     except ValueError as e:
         print(e)
