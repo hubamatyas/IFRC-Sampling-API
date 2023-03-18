@@ -15,12 +15,7 @@ class SimpleRandom:
         self.non_response_rate = int(non_response_rate) if non_response_rate else 0
         self.subgroups = subgroups
         self.sample_size = None
-        if self.individuals or self.households:
-            if self.individuals:
-                self.population_size = self.individuals
-            else:
-                self.population_size = self.households * 4  # assumed the average number of people in a single
-                # household = 4
+        self.population_size = self.individuals or self.households
 
     def check_inputs(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups):
         if not isinstance(margin_of_error, int) and margin_of_error is not None:
