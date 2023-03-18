@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .ClusterRandom import ClusterRandom
 from .SystematicRandom import SystematicRandom
 from .serializers import StateSerializer, OptionSerializer
 from .models import State, Option
@@ -109,6 +110,41 @@ def systematicRandom(request):
             'status': 'success',
             'intervals': intervals
         }
+        return Response(response)
+    except ValueError as e:
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+    except TypeError as e:
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+
+
+@api_view(['POST'])
+def clusterRandom(request):
+    data = request.data
+    margin_of_error = int(data['margin_of_error'])
+    confidence_level = int(data['confidence_level'])
+    communities = data['communities']
+    cluster_random = ClusterRandom(margin_of_error=margin_of_error, confidence_level=confidence_level,
+                                   individuals=None, households=None,
+                                   non_response_rate=None, subgroups=None, communities=communities)
+    try:
+        cluster_random.start_calculation()
+        clusters = cluster_random.get_clusters()
+
+        response = {
+            'status': 'success',
+            'clusters': clusters
+        }
+        print("clusters = ", clusters)
         return Response(response)
     except ValueError as e:
         print(e)
