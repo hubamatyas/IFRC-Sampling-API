@@ -153,6 +153,21 @@ def timeLocation(request):
             'units': units
         }
         # print("units = ", units)
+        return Response(response)
+    except ValueError as e:
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
+    except TypeError as e:
+        print(e)
+        response = {
+            'status': 'error',
+            'error_message': str(e)
+        }
+        return Response(response, status=400)
 
 @api_view(['POST'])
 def clusterRandom(request):
