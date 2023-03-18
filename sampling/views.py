@@ -18,11 +18,13 @@ def index(request):
 @api_view(['GET'])
 def apiOverview(request):
     api_urls = {
-        'List': '/task-list/',
-        'Detail View': '/task-detail/<str:pk>/',
-        'Create': '/task-create/',
-        'Update': '/task-update/<str:pk>/',
-        'Delete': '/task-delete/<str:pk>/',
+        'State List': '/state-list/',
+        'Option List': '/option-list/',
+        'Decision Tree': '/decision-tree/<int:state_id>/',
+        'Simple Random': '/simple-random/',
+        'Systematic Random': '/systematic-random/',
+        'Time Location': '/time-location/',
+        'Cluster Random': '/cluster-random/'
     }
     return Response(api_urls)
 

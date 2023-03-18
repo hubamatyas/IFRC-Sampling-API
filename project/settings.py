@@ -24,9 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hvs)*#3k$y810gg+x^_*$e@vo+nu6gg42w29n#svw3&w8ce_sr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','ifrc-sampling.azurewebsites.net','localhost']
+ALLOWED_HOSTS = [
+    # '127.0.0.1',
+    # 'localhost'
+    'ifrc-sampling.azurewebsites.net',
+    ]
 
 # Application definition
 
@@ -80,8 +84,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://ifrc-sampling.azurewebsites.net',
-    'https://*.127.0.0.1',
-    'http://localhost:3000',
+    # 'https://*.127.0.0.1',
+    # 'http://localhost:3000',
     'https://ifrc-sampling.vercel.app/',
     'https://ifrc-sampling.vercel.app'
     ]
@@ -151,7 +155,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'https://ifrc-sampling-3y1hbejgb-hubamatyas.vercel.app',
+    # 'http://localhost:3000',
     'https://ifrc-sampling.vercel.app'
 ]
