@@ -73,8 +73,8 @@ class TimeLocation(SimpleRandom):
 
         # Loop through each tuple in the list
         for subset in selected_subset:
-            location = f"Location{subset[0]}"
-            day = f"Day{subset[1]}"
+            location = f"Location {subset[0]}"
+            day = f"Day {subset[1]}"
             time = subset[2]
 
             # Check if the location exists in the dictionary, if not add it
