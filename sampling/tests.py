@@ -4,7 +4,7 @@ import xmlrunner
 import coverage
 import xml.etree.ElementTree as ET
 from django.test import TestCase
-
+from rest_framework.test import APITestCase
 from sampling.ClusterRandom import ClusterRandom
 from sampling.SimpleRandom import SimpleRandom
 from sampling.SystematicRandom import SystematicRandom
@@ -255,6 +255,35 @@ class ClusterRandomTestCase(unittest.TestCase):
         for name in community_clusters:
             self.assertTrue(1 <= community_clusters[name] <= 24)
 
+class SimpleRandomTestCase(APITestCase):
+
+    def test_valid_input(self):
+        data = {
+            'margin_of_error': 5,
+            'confidence_level': 95,
+            'non_response_rate': 0.2,
+            'subgroups': None,
+            'individuals': 100,
+            'households': None
+        }
+        response = self.client.post('/simple-random/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['status'], 'success')
+        self.assertTrue('sample_size' in response.data)
+
+    def test_invalid_input(self):
+        data = {
+            'margin_of_error': 5,
+            'confidence_level': 95,
+            'non_response_rate': 0.2,
+            'subgroups': None,
+            'individuals': 0,
+            'households': None
+        }
+        response = self.client.post('/simple-random/', data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['status'], 'error')
+        self.assertTrue('error_message' in response.data)
 
 print("Starting test suite...")
 if __name__ == '__main__':
