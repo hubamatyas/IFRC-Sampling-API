@@ -36,7 +36,7 @@ class ClusterRandom(SimpleRandom):
         # print(community_sample_sizes)
         return community_sample_sizes
 
-    def assign_clusters(self, communities, community_sample_sizes):
+    def assign_number_of_clusters(self, communities, community_sample_sizes,total_clusters):
 
         total_sample_population = sum(community_sample_sizes.values())
 
@@ -55,6 +55,7 @@ class ClusterRandom(SimpleRandom):
                     if community_clusters[name] > 0:
                         community_clusters[name] -= 1
                         excess_clusters -= 1
+
             else:
                 remaining_clusters = total_clusters - total_assigned_clusters
                 remaining_population = total_sample_population - (
@@ -69,14 +70,20 @@ class ClusterRandom(SimpleRandom):
                             remaining_population -= population
                             break
                         random_number -= population
+        # print(community_clusters)
+        return community_clusters
 
+    def assign_list_of_clusters(self,community_clusters):
+        # print(community_clusters)
+        community_clusters_list = {}
         start_cluster = 1
         for name, num_clusters in community_clusters.items():
             cluster_numbers = list(range(start_cluster, start_cluster + num_clusters))
             start_cluster += num_clusters
-            community_clusters[name] = cluster_numbers
-
-        self.clusters = community_clusters
+            community_clusters_list[name] = cluster_numbers
+        # print(community_clusters_list)
+        self.clusters = community_clusters_list
+        return community_clusters_list
 
     def get_clusters(self):
         if self.clusters is None:
@@ -91,13 +98,17 @@ class ClusterRandom(SimpleRandom):
 
     def start_calculation(self):
         community_sample_sizes = self.community_sample_sizes_calculation()
-        self.assign_clusters(self.communities, community_sample_sizes)
+        community_clusters = self.assign_number_of_clusters(self.communities, community_sample_sizes,total_clusters)
+        updated_community_clusters = self.assign_list_of_clusters(community_clusters)
         result = self.check_clusters()
 
-# if __name__ == '__main__':
-#     communities = {'A': 500, 'B': 150, 'C': 100, 'D': 300}
-#     clusterRandom = ClusterRandom(5, 95, None, None, 0, None, communities)
-#     clusterRandom.start_calculation()
-#     clusters = clusterRandom.get_clusters()
-#     print(clusters)
-#     # print(result)
+
+if __name__ == '__main__':
+    communities = [{'name': 'Community A', 'size': 1000},    {'name': 'Community B', 'size': 1500},
+                   {'name': 'Community C','size': 2000}]
+
+    clusterRandom = ClusterRandom(5, 95, None, None, 0, None, communities)
+    clusterRandom.start_calculation()
+    clusters = clusterRandom.get_clusters()
+    print(clusters)
+
