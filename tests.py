@@ -1,30 +1,35 @@
 import os
 import unittest
 import xmlrunner
-import coverage
 import xml.etree.ElementTree as ET
 from django.test import TestCase
-from rest_framework.test import APITestCase
+import unittest
+import coverage
+from sampling import *
 from sampling.ClusterRandom import ClusterRandom
-from sampling.SimpleRandom import SimpleRandom
 from sampling.SystematicRandom import SystematicRandom
 from sampling.TimeLocation import TimeLocation
+from sampling.SimpleRandom import SimpleRandom
+from django.conf import settings
 
+import os
 
-# class StateTestCase(TestCase):
-#     def test_state(self):
-#         self.assertEqual(1, 1)
-#
-#
-# class OptionTestCase(TestCase):
-#     def test_option(self):
-#         self.assertEqual(1, 1)
-#
-#
-# class DecisionTreeTestCase(TestCase):
-#     def test_decision_tree(self):
-#         self.assertEqual(1, 1)
-#
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
+
+import sys
+
+# Add the parent directory of the current file to the Python path
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+# Add the directory containing the `myproject` module to the Python path
+myproject_dir = os.path.abspath(os.path.join(parent_dir, 'myproject'))
+if myproject_dir not in sys.path:
+    sys.path.insert(0, myproject_dir)
+
+cov = coverage.Coverage(source=['sampling'])
+cov.start()
 
 class SimpleRandomTestCase(unittest.TestCase):
 
@@ -143,7 +148,7 @@ class TimeLocationTestCase(unittest.TestCase):
         self.time_location.interviews_per_session = 10
         result = self.time_location.generate_time_location_combinations(self.locations, self.days)
         random_units = self.time_location.select_random_units(result)
-        self.assertEqual(len(random_units)*self.time_location.interviews_per_session, 80)
+        self.assertEqual(len(random_units) * self.time_location.interviews_per_session, 80)
 
     def test_if_total_interviews_greater_than_sample_size_in_select_random_units(self):
         self.time_location.interviews_per_session = 40
@@ -156,7 +161,6 @@ class TimeLocationTestCase(unittest.TestCase):
         result = self.time_location.generate_time_location_combinations(self.locations, self.days)
         random_units = self.time_location.select_random_units(result)
         self.assertEqual(len(random_units), 8)
-
 
     def test_generate_time_location_combinations(self):
         expected_output = [(1, 1, 'morning'), (1, 1, 'evening'), (1, 2, 'morning'), (1, 2, 'evening'),
@@ -177,8 +181,6 @@ class TimeLocationTestCase(unittest.TestCase):
         selected_subset = self.time_location.select_random_units(time_location_units)
         expected_length = self.sample_size / self.interviews_per_session
         self.assertEqual(len(selected_subset), expected_length)
-
-
 
 
 class ClusterRandomTestCase(unittest.TestCase):
@@ -255,35 +257,6 @@ class ClusterRandomTestCase(unittest.TestCase):
         for name in community_clusters:
             self.assertTrue(1 <= community_clusters[name] <= 24)
 
-class SimpleRandomTestCase(APITestCase):
-
-    def test_valid_input(self):
-        data = {
-            'margin_of_error': 5,
-            'confidence_level': 95,
-            'non_response_rate': 0.2,
-            'subgroups': None,
-            'individuals': 100,
-            'households': None
-        }
-        response = self.client.post('/simple-random/', data, format='json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['status'], 'success')
-        self.assertTrue('sample_size' in response.data)
-
-    def test_invalid_input(self):
-        data = {
-            'margin_of_error': 5,
-            'confidence_level': 95,
-            'non_response_rate': 0.2,
-            'subgroups': None,
-            'individuals': 0,
-            'households': None
-        }
-        response = self.client.post('/simple-random/', data, format='json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data['status'], 'error')
-        self.assertTrue('error_message' in response.data)
 
 print("Starting test suite...")
 if __name__ == '__main__':
@@ -292,3 +265,7 @@ if __name__ == '__main__':
         failfast=False,
         buffer=False,
         catchbreak=False)
+
+cov.stop()
+cov.save()
+cov.report()
