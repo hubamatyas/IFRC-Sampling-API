@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<testsuite name="SimpleRandomTestCase-20230321144816" tests="7" time="0.000" failures="0" errors="0">
+	<testcase classname="SimpleRandomTestCase" name="test_calculate_sample_size" time="0.000"/>
+	<testcase classname="SimpleRandomTestCase" name="test_calculate_subgroup_sample_sizes" time="0.000"/>
+	<testcase classname="SimpleRandomTestCase" name="test_calculate_subgroup_sample_sizes_empty" time="0.000"/>
+	<testcase classname="SimpleRandomTestCase" name="test_calculate_subgroup_sample_sizes_single" time="0.000"/>
+	<testcase classname="SimpleRandomTestCase" name="test_get_sample_size_raises_error_when_not_initialized" time="0.000"/>
+	<testcase classname="SimpleRandomTestCase" name="test_non_response_rate_greater_than_100" time="0.000"/>
+	<testcase classname="SimpleRandomTestCase" name="test_sample_size_returns_correct_value_when_initialized" time="0.000"/>
+	<system-out><![CDATA[]]></system-out>
+	<system-err><![CDATA[]]></system-err>
+</testsuite>

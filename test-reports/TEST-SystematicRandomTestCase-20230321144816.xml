@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<testsuite name="SystematicRandomTestCase-20230321144816" tests="5" time="0.000" failures="0" errors="0">
+	<testcase classname="SystematicRandomTestCase" name="test_get_intervals_after_start_calculation" time="0.000"/>
+	<testcase classname="SystematicRandomTestCase" name="test_get_intervals_before_start_calculation" time="0.000"/>
+	<testcase classname="SystematicRandomTestCase" name="test_get_intervals_type" time="0.000"/>
+	<testcase classname="SystematicRandomTestCase" name="test_start_calculation_no_subgroups" time="0.000"/>
+	<testcase classname="SystematicRandomTestCase" name="test_start_calculation_with_subgroups" time="0.000"/>
+	<system-out><![CDATA[]]></system-out>
+	<system-err><![CDATA[]]></system-err>
+</testsuite>
