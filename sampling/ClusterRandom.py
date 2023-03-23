@@ -24,6 +24,13 @@ class ClusterRandom(SimpleRandom):
         self.clusters = None
 
     def community_sample_sizes_calculation(self):
+        """
+                Calculate the sample size for each community.
+
+                Returns:
+                community_sample_sizes (dict): A dictionary containing the calculated sample size for each community.
+
+        """
         community_sample_sizes = {}
 
         for community in self.communities:
@@ -37,6 +44,18 @@ class ClusterRandom(SimpleRandom):
         return community_sample_sizes
 
     def assign_number_of_clusters(self, communities, community_sample_sizes,total_clusters):
+
+        """
+                Assign the number of clusters for each community.
+
+                Args:
+                communities (list): A list of communities in the population, along with their sizes.
+                community_sample_sizes (dict): A dictionary containing the calculated sample size for each community.
+                total_clusters (int): The total number of clusters to assign.
+
+                Returns:
+                community_clusters (dict): A dictionary containing the assigned number of clusters for each community.
+        """
 
         total_sample_population = sum(community_sample_sizes.values())
 
@@ -74,6 +93,19 @@ class ClusterRandom(SimpleRandom):
         return community_clusters
 
     def assign_list_of_clusters(self,community_clusters):
+
+        """
+        Assigns a list of clusters to the `clusters` attribute of this object.
+
+        Args:
+            community_clusters (dict): A dictionary containing the number of clusters for each community.
+
+        Returns:
+            dict: A dictionary that maps each community to a list of cluster numbers. The keys of the dictionary are the
+            same as the keys of `community_clusters`, and the values are lists of integers starting from 1 and ending with
+            the number of clusters specified for each community.
+        """
+
         # print(community_clusters)
         community_clusters_list = {}
         start_cluster = 1
