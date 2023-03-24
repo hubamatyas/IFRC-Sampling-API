@@ -171,7 +171,7 @@ Content-Type: application/json
 
 ```
 
-## Time-Location Sample Size API
+## Time-Location Sampling API
 
 This API generates randomly selected time-location units from a sample size for a survey based on user-defined parameters.
 
