@@ -10,26 +10,14 @@ from sampling.ClusterRandom import ClusterRandom
 from sampling.SystematicRandom import SystematicRandom
 from sampling.TimeLocation import TimeLocation
 from sampling.SimpleRandom import SimpleRandom
+import random
 from django.conf import settings
 
-import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
 
-import sys
+# cov = coverage.Coverage(source=["./sampling"])
+# cov.start()
 
-# Add the parent directory of the current file to the Python path
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
-
-# Add the directory containing the `myproject` module to the Python path
-myproject_dir = os.path.abspath(os.path.join(parent_dir, 'myproject'))
-if myproject_dir not in sys.path:
-    sys.path.insert(0, myproject_dir)
-
-cov = coverage.Coverage(source=['sampling'])
-cov.start()
 
 class SimpleRandomTestCase(unittest.TestCase):
 
@@ -130,6 +118,7 @@ class SystematicRandomTestCase(unittest.TestCase):
 class TimeLocationTestCase(unittest.TestCase):
 
     def setUp(self):
+        random.seed(123)
         self.margin_of_error = 5
         self.confidence_level = 95
         self.individuals = 100
@@ -143,6 +132,13 @@ class TimeLocationTestCase(unittest.TestCase):
         self.time_location = TimeLocation(self.margin_of_error, self.confidence_level, self.individuals,
                                           self.households, self.non_response_rate, self.subgroups, self.locations,
                                           self.days, self.interviews_per_session)
+
+    def test_total_result(self):
+        self.time_location.start_calculation()
+        calculated_output = self.time_location.get_units()
+        expected_output = [{'Location 1': [{'Day 1': ['evening']}, {'Day 2': ['morning']}]},
+                           {'Location 2': [{'Day 1': ['morning']}, {'Day 3': ['evening']}]}]
+        self.assertEqual(calculated_output, expected_output)
 
     def test_if_total_interviews_equals_sample_size_in_select_random_units(self):
         self.time_location.interviews_per_session = 10
@@ -260,12 +256,5 @@ class ClusterRandomTestCase(unittest.TestCase):
 
 print("Starting test suite...")
 if __name__ == '__main__':
-    unittest.main(
-        testRunner=xmlrunner.XMLTestRunner(output='test-reports'),
-        failfast=False,
-        buffer=False,
-        catchbreak=False)
+    unittest.main()
 
-cov.stop()
-cov.save()
-cov.report()
