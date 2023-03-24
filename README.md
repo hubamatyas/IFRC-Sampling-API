@@ -26,4 +26,4 @@ Test it by copying `http://127.0.0.1:8000/api/decision-tree/1` into the searchba
 
 ## API Documentation
 
-- - See API Documentation [here](./sampling/README.md)
+- See API Documentation [here](./sampling/README.md)

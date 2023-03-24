@@ -33,7 +33,7 @@ If an error occurs, the API will return a JSON object with the following fields:
 (Generated using postman)
 
 - Request
-POST /simple-random/
+POST /simple-random/<br>
 Content-Type: application/json
 ```
 {
@@ -47,7 +47,7 @@ Content-Type: application/json
 ```
 
 - Response
-HTTP/1.1 200 OK
+HTTP/1.1 200 OK<br>
 Content-Type: application/json
 ```
 {
@@ -71,7 +71,7 @@ POST /systematic-random/
 If the request is successful, the API will return a JSON object with the following fields:
 - status (string): "success" if the calculation was successful, "error" otherwise.
 - intervals (int): The intervals or the step count on the sample size required to achieve the desired margin of error and confidence level.
-If an error occurs, the API will return a JSON object with the following fields:\
+If an error occurs, the API will return a JSON object with the following fields:
 - status (string): "error".
 - error_message (string): A message describing the error.
 
@@ -85,9 +85,8 @@ If an error occurs, the API will return a JSON object with the following fields:
 
 
 ### Example(2): 
-(Generated using postman)
+(Generated using postman)<br>
 Format: Raw - JSON
-
 
 - Request
 POST /time-location/
@@ -106,7 +105,7 @@ Content-Type: application/json
 ```
 
 - Response
-HTTP/1.1 200 OK
+HTTP/1.1 200 OK<br>
 Content-Type: application/json
 ```
     "status": "success",
@@ -196,10 +195,10 @@ Interviews_per_session (required,int): The number of interviews per session or p
 
 ### Response
 
-If the request is successful, the API will return a JSON object with the following fields:\
+If the request is successful, the API will return a JSON object with the following fields:
 - status (string): "success" if the calculation was successful, "error" otherwise.
 - intervals (int): The intervals or the step count on the sample size required to achieve the desired margin of error and confidence level.
-If an error occurs, the API will return a JSON object with the following fields:\
+If an error occurs, the API will return a JSON object with the following fields:
 - status (string): "error".
 - error_message (string): A message describing the error.
 
@@ -208,7 +207,7 @@ If an error occurs, the API will return a JSON object with the following fields:
 (Generated using postman)
 
 - Request
-POST /systematic-random/
+POST /systematic-random/<br>
 Content-Type: application/json
 ```
 {
@@ -261,11 +260,11 @@ If an error occurs, the API will return a JSON object with the following fields:
 
 
 ### Example(4): 
-(Generated using postman)
+(Generated using postman)<br>
 Format: Raw - JSON
 
 - Request
-POST /cluster-random/
+POST /cluster-random/<br>
 Content-Type: application/json
 ```
 {
