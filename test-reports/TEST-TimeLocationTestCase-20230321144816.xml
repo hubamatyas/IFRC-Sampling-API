@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<testsuite name="TimeLocationTestCase-20230321144816" tests="2" time="0.000" failures="0" errors="0">
+	<testcase classname="TimeLocationTestCase" name="test_generate_time_location_combinations" time="0.000"/>
+	<testcase classname="TimeLocationTestCase" name="test_select_correct_number_of_random_units" time="0.000"/>
+	<system-out><![CDATA[]]></system-out>
+	<system-err><![CDATA[]]></system-err>
+</testsuite>

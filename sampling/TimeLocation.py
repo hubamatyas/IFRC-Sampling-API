@@ -9,6 +9,19 @@ time_slots = ['morning', 'evening']
 class TimeLocation(SimpleRandom):
     def __init__(self, margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups,
                  locations, days, interviews_per_session):
+        """
+        A class for generating a sample of time-location units for a survey.
+        Inherits from SimpleRandom class for calculating sample sizes.
+
+        Parameters:
+        Same as SimpleRandom with the following:
+
+        locations (int): the number of locations to sample from
+        days (int): the number of working days to sample
+        interviews_per_session (int): the number of interviews per time-location unit session
+
+        """
+
         super().__init__(margin_of_error, confidence_level, individuals, households, non_response_rate, subgroups)
         self.locations = locations
         self.days = days
@@ -16,6 +29,10 @@ class TimeLocation(SimpleRandom):
         self.units = None
 
     def validate_inputs(self):
+        """
+            Validate that the inputs are valid and raise an error if not.
+        """
+
         result = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level,
                                             self.non_response_rate)
         sample_size = result['total']
@@ -23,16 +40,38 @@ class TimeLocation(SimpleRandom):
             raise ValueError("Interviews per session cannot be greater than sample size")
 
     def generate_time_location_combinations(self, locations, days):
+        """
+            Generate all possible time-location combinations for the given number of locations and days.
+
+            Parameters:
+               locations (int): the number of locations to sample from
+               days (int): the number of days to sample from
+
+            Returns:
+               time_location_units (list): a list of tuples representing all possible time-location combinations
+
+        """
+
         time_location_units = []
         for loc in range(1, locations + 1):
             for day in range(1, days + 1):
                 for slot in time_slots:
                     time_location_units.append((loc, day, slot))
+        # print(time_location_units)
         return time_location_units
 
     def select_random_units(self, time_location_units):
-        # Make sure that interviews_per_session is at least 10
-        # interviews_per_session = max(int(self.population_size / len(time_location_units)), 10)
+
+        """
+            Select a random subset of time-location units for the survey.
+
+            Parameters:
+                time_location_units (list): a list of tuples representing all possible time-location combinations
+
+            Returns:
+                selected_subset (list): a list of tuples representing the selected time-location units
+
+        """
 
         result = self.calculate_sample_size(self.population_size, self.margin_of_error, self.confidence_level,
                                             self.non_response_rate)
@@ -65,9 +104,12 @@ class TimeLocation(SimpleRandom):
                         selected_subset.pop()
                         found_valid_selection = True
 
+        # print(selected_subset)
+
         return selected_subset
 
-    def generate_desired_output(self, selected_subset):
+    def generate_dict_of_selected_subset(self, selected_subset):
+
         # Create a dictionary to store the output
         output_dict = {}
 
@@ -88,6 +130,10 @@ class TimeLocation(SimpleRandom):
             # Add the time slot to the day list
             output_dict[location][day].append(time)
 
+        # print(output_dict)
+        return output_dict
+
+    def generate_desired_result(self,output_dict):
         # Convert the dictionary to the desired and sorted output format
         units = []
         for location in sorted(output_dict):
@@ -99,12 +145,15 @@ class TimeLocation(SimpleRandom):
             location_dict[location] = sorted(location_dict[location], key=lambda x: list(x.keys())[0])
             units.append(location_dict)
         self.units = units
+        # print(self.units)
+        return units
 
     def start_calculation(self):
         self.validate_inputs()
         time_location_units = self.generate_time_location_combinations(self.locations, self.days)
         selected_subset = self.select_random_units(time_location_units)
-        self.generate_desired_output(selected_subset)
+        dict_format_of_selected_subset = self.generate_dict_of_selected_subset(selected_subset)
+        units = self.generate_desired_result(dict_format_of_selected_subset)
 
     def get_units(self):
         if self.units is None:
@@ -114,7 +163,7 @@ class TimeLocation(SimpleRandom):
 
 if __name__ == '__main__':
     timeLocation = TimeLocation(margin_of_error=5, confidence_level=95, individuals=500, households=0,
-                                non_response_rate=0, subgroups=None, locations=5, days=8, interviews_per_session=20)
+                                non_response_rate=0, subgroups=None, locations=3, days=4, interviews_per_session=20)
     timeLocation.start_calculation()
     result = timeLocation.get_units()
     print(result)
