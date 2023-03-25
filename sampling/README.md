@@ -1,4 +1,5 @@
-# API DOCUMENTATION: 
+# API DOCUMENTATION:
+Top level API endpoint: https://ifrc-sampling.azurewebsites.net/api/
 
 ## Simple Random Sampling API
 
