@@ -1,8 +1,9 @@
 @startuml
-
+hide arrows
+left to right direction
 skin rose
 
-title Relationships - Class Diagram
+title UML - Class Diagram
 
 
 class SimpleRandom {
@@ -15,20 +16,25 @@ class SimpleRandom {
   + sample_size: int
   + population_size: int
 
-  + __init__(margin_of_error: int, confidence_level: int, individuals: int, households: int, non_response_rate: int, subgroups: list)
-    + check_inputs(margin_of_error: int, confidence_level: int, individuals: int, households: int, non_response_rate: int, subgroups: list) : None
-    + validate_inputs() : None
-    + start_calculation() : None
-    + calculate_sample_size(population_size: int, margin_of_error: int, confidence_level: int, non_response_rate: int) : dict
-    + calculate_subgroup_sample_sizes(margin_of_error: int, confidence_level: int, non_response_rate: int, subgroups: list) : dict
-    + get_sample_size() : int
+  + __init__(margin_of_error: int, confidence_level: int, individuals: int,
+  households: int, non_response_rate: int, subgroups: list)
+    + check_inputs(margin_of_error: int, confidence_level: int, individuals: int,
+    households: int, non_response_rate: int, subgroups: list) : void
+    + validate_inputs() : void
+    + start_calculation() : void
+    + calculate_sample_size(population_size: int, margin_of_error: int,
+    confidence_level: int, non_response_rate: int) : dict
+    + calculate_subgroup_sample_sizes(margin_of_error: int, confidence_level: int,
+     non_response_rate: int, subgroups: list) : dict
+    + get_sample_size() : dict
 }
 
 class SystematicRandom {
     + intervals: dict
 
-    + __init__(margin_of_error: int, confidence_level: int, individuals: int, households: int, non_response_rate: int, subgroups: list)
-    + start_calculation(): None
+    + __init__(margin_of_error: int, confidence_level: int, individuals: int,
+    households: int, non_response_rate: int, subgroups: list)
+    + start_calculation(): void
     + get_intervals() : dict
 }
 class TimeLocation {
@@ -36,31 +42,35 @@ class TimeLocation {
     + days: int
     + interviews_per_session: int
     + units: list
-    + __init__( margin_of_error: int, confidence_level: int, individuals: int, households: int, non_response_rate: int, subgroups: list, locations: int, days: int, interviews_per_session: int)
-    + validate_inputs() : None
+    + __init__( margin_of_error: int, confidence_level: int, individuals: int,
+    households: int, non_response_rate: int, subgroups: list, locations: int,
+    days: int, interviews_per_session: int)
+    + validate_inputs() : void
     + generate_time_location_combinations( locations: int, days: int) : list
     + select_random_units( time_location_units: list) : list
     + generate_dict_of_selected_subset(selected_subset:list) : dict
     + generate_desired_result( output_dict: dict) : list
-    + start_calculation() : None
+    + start_calculation() : void
     + get_units() : list
 }
 class ClusterRandom {
   + communities : list
   + clusters : list
 
-  + __init__(margin_of_error: int, confidence_level: int, individuals: int, households: int, non_response_rate: int, subgroups:list, communities:list)
+  + __init__(margin_of_error: int, confidence_level: int, individuals: int,
+  households: int, non_response_rate: int, subgroups:list, communities:list)
   + community_sample_sizes_calculation():dict
-  + assign_number_of_clusters(communities:list, community_sample_sizes:dict,total_clusters:int):dict
+  + assign_number_of_clusters(communities:list,
+  community_sample_sizes:dict,total_clusters:int):dict
   + assign_list_of_clusters(community_clusters:dict):dict
-  + check_clusters() : None
-  + start_calculation() : None
-  + get_clusters():None
+  + check_clusters() : void
+  + start_calculation() : void
+  + get_clusters(): list
 }
 
-SimpleRandom <|-down- SystematicRandom: Inheritance
-SimpleRandom <|-down- TimeLocation: Inheritance
-SimpleRandom <|-down- ClusterRandom: Inheritance
+SimpleRandom <|-down- SystematicRandom
+SimpleRandom <|-down- TimeLocation
+SimpleRandom <|-down- ClusterRandom
 
 
 @enduml
